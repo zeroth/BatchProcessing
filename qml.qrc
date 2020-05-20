@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>ProcessTable.qml</file>
+        <file>fonts/fontello.ttf</file>
+        <file>JobConfigDialog.qml</file>
+        <file>ProcessTableV2.qml</file>
+        <file>icons/appicon.png</file>
+        <file>icons/appicon2.png</file>
+    </qresource>
+</RCC>
