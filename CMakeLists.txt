@@ -29,13 +29,14 @@ LINK_DIRECTORIES(${TIFF_LIBRARY_DIR})
 
 find_package(Qt5 COMPONENTS Widgets Core Quick REQUIRED)
 # Cuda GPU
-FIND_PACKAGE(CUDA REQUIRED)
-FIND_PACKAGE(NVVM REQUIRED)
+#FIND_PACKAGE(CUDA REQUIRED)
+#FIND_PACKAGE(NVVM REQUIRED)
 
 # Array Fire library
 FIND_PACKAGE(ArrayFire REQUIRED)
 INCLUDE_DIRECTORIES(${ArrayFire_INCLUDE_DIRS})
 #WIN32
+
 add_executable(BatchProcessing
     Tiff/TiffReader.cpp
     Tiff/TiffReader.h
@@ -44,6 +45,8 @@ add_executable(BatchProcessing
     Tiff/Common.h
     Tiff/BioImage.cpp
     Tiff/BioImage.h
+#    Profiler/MemTrack.h
+#    Profiler/MemTrack.cpp
     JobProducer.cpp
     JobProducer.h
     Job.cpp
@@ -56,16 +59,45 @@ add_executable(BatchProcessing
     HyperStackRunner.h
     Logger.cpp
     Logger.h
+    DeskewThread.cpp
+    DeskewThread.h
     main.cpp
+#    main2.cpp
+#    DeskewWatchDog.cpp
     qml.qrc
     )
 
+
+add_executable(VRWatcher
+    Tiff/TiffReader.cpp
+    Tiff/TiffReader.h
+    Tiff/TiffWriter.cpp
+    Tiff/TiffWriter.h
+    Tiff/Common.h
+    Tiff/BioImage.cpp
+    Tiff/BioImage.h
+
+    DeskewRunner.cpp
+    DeskewRunner.h
+    DeskewThread.cpp
+    DeskewThread.h
+
+    DeskewWatchDog.cpp
+
+    )
+
+
+
+
+target_link_libraries(VRWatcher
+    PRIVATE Qt5::Core ${TIFF_LIBRARIES} ${ArrayFire_CUDA_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT})
 
 target_compile_definitions(${PROJECT_NAME}
     PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 target_link_libraries(${PROJECT_NAME}
     PRIVATE Qt5::Core Qt5::Quick Qt5::Widgets ${TIFF_LIBRARIES} ${ArrayFire_CUDA_LIBRARIES}
-    ${CMAKE_THREAD_LIBS_INIT} ${CUDA_LIBRARIES} ${NVVM_LIB})
+    ${CMAKE_THREAD_LIBS_INIT})
 
 
  if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
@@ -74,13 +106,14 @@ target_link_libraries(${PROJECT_NAME}
      SET(WINDEPLOY_TYPE "release")
  endif()
 message(${CMAKE_CURRENT_BINARY_DIR})
+message(${ArrayFire_INCLUDE_DIRS})
 
  message(STATUS ${WINDEPLOY_TYPE})
  get_filename_component(QT_BASE_DIR ${QT_QMAKE_EXECUTABLE} DIRECTORY)
 
  add_custom_command(TARGET ${PROJECT_NAME}
      POST_BUILD
-     COMMAND "C:/Qt/5.14.1/msvc2017_64/bin/windeployqt.exe" --${WINDEPLOY_TYPE} --compiler-runtime  --json --pdb --qmldir ${QT_BASE_DIR}/../qml "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.exe"
+     COMMAND "C:/Qt/5.15.0/msvc2019_64/bin/windeployqt.exe" --${WINDEPLOY_TYPE} --compiler-runtime  --json --pdb --qmldir ${QT_BASE_DIR}/../qml "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.exe"
  )
 
  add_custom_command(TARGET ${PROJECT_NAME}
@@ -92,4 +125,20 @@ message(${CMAKE_CURRENT_BINARY_DIR})
      POST_BUILD
      COMMAND ${CMAKE_COMMAND} -E copy  ${TIFF_LIBRARY_DIR}/tiff.dll "${CMAKE_CURRENT_BINARY_DIR}/"
  )
+
+
+#add_custom_command(TARGET VRWatcher
+#    POST_BUILD
+#    COMMAND "C:/Qt/5.15.0/msvc2019_64/bin/windeployqt.exe" --${WINDEPLOY_TYPE} --compiler-runtime  --json --pdb --qmldir ${QT_BASE_DIR}/../qml "${CMAKE_CURRENT_BINARY_DIR}/VRWatcher.exe"
+#)
+
+#add_custom_command(TARGET VRWatcher
+#    POST_BUILD
+#    COMMAND ${CMAKE_COMMAND} -E copy  ${ArrayFire_INCLUDE_DIRS}/../lib/afcuda.dll "${CMAKE_CURRENT_BINARY_DIR}/"
+#)
+
+#add_custom_command(TARGET VRWatcher
+#    POST_BUILD
+#    COMMAND ${CMAKE_COMMAND} -E copy  ${TIFF_LIBRARY_DIR}/tiff.dll "${CMAKE_CURRENT_BINARY_DIR}/"
+#)
 

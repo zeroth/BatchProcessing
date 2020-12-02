@@ -168,7 +168,7 @@ struct TiffReaderData {
             _TIFFfree(buffer);
         tmsize_t bufferSize = TIFFStripSize(tif);
         buffer = _TIFFmalloc(bufferSize);
-        // if its grayscale it there will be only 1 stripe
+        // if its grayscale there will be only 1 stripe
         if(!TIFFReadEncodedStrip(tif, 0, buffer, bufferSize)) {
             std::cerr << "reading error closing the file " << path << bufferSize << std::endl;
             throw std::runtime_error( "Error while reading strip something went wrong "+ std::to_string(bufferSize));

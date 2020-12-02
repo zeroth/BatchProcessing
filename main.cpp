@@ -19,7 +19,11 @@ int main(int argc, char *argv[])
     QApplication::setApplicationName("BatchProcessor");
     QApplication::setOrganizationName("CellphyLab");
     QApplication::setOrganizationDomain("CellphyLab.com");
-    qInstallMessageHandler(&Logger::qtMessageHandler);
+
+    const QString settingsFile = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).absoluteFilePath("settings.ini");
+    qDebug() << "Logging into " << settingsFile;
+
+    //qInstallMessageHandler(&Logger::qtMessageHandler);
 
     Logger::instance()->log(
                 QString("%1 %2 Version %3 Launched")
@@ -29,7 +33,7 @@ int main(int argc, char *argv[])
 
     app.setWindowIcon( QIcon(":/icons/appicon.png") );
 
-    const QString settingsFile = QDir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)).absoluteFilePath("settings.ini");
+
     QSettings * m_settings = new QSettings(settingsFile, QSettings::IniFormat, qApp);
 
     qmlRegisterUncreatableType<JobModel>("BatchProcessor", 1, 0, "JobModel", "QML should not initialize this Class");

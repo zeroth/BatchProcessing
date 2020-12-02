@@ -7,7 +7,8 @@
 class DeskewRunner
 {
 public:
-    DeskewRunner(const QString& inputList, const QString& outputList, float dz, float xy, double angle);
+    DeskewRunner(const QString& inputList, const QString& outputList, double dz,
+                 double xy, double angle, bool save8Bit=false);
     QString inputFile()  const;
 
     QString outputFile()  const;
@@ -16,7 +17,8 @@ public:
 private:
     QString input;
     QString output;
-    float dz; float xy; double angle;
+    double dz; double xy; double angle;
+    bool save8Bit;
 };
 
 #endif // DESKEW_H

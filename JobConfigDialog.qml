@@ -39,16 +39,6 @@ Dialog {
     function openDialog(inputPath) {
         dirList = inputPath;
         inputDirPath = inputPath.join(",");
-//        console.log(dirList);
-//        if(inputPath.length > 1){
-//            isList = true
-//            inputDirPath = inputPath.join(",");
-//        } else {
-//            isList = false
-//            inputDirPath = inputPath[0]
-//            dirList = inputPath[0]
-//        }
-
         this.open();
     }
     onAccepted:  {
@@ -73,6 +63,13 @@ Dialog {
     }
     onActionChosen:  {
         // impliment the validation logic for this dialog
+        if(deskew) {
+            if((!xyPixel || xyPixel == "") || (!zStep || zStep == "") || (!deskewAngle || deskewAngle == "")) {
+                action.accepted = false;
+                return;
+            }
+        }
+
         action.accepted = true
     }
 

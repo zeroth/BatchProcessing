@@ -16,40 +16,28 @@ JobProducer *JobProducer::instance()
 bool JobProducer:: createJob(const QVariantMap &config)
 {
     QStringList dirList;
-         dirList = qvariant_cast<QStringList>(config.value("inputDir"));
+    dirList = qvariant_cast<QStringList>(config.value("inputDir"));
 
-//    if(dirList.isEmpty()){
-//        Job *j = new Job(jobs.size()+1);
+    qDebug() << "Main " << config;
 
-//        if(!j->createJob(config)) {
-//            delete j;
-//            return false;
-//        }
+    for(QString s: dirList) {
+        QVariantMap localConfig = config;
+        localConfig["inputDir"] = s;
+        qDebug() << localConfig;
 
+        Job *j = new Job(jobs.size()+1);
 
-//        jobs[j->jobId()] = j;
-//        jobModel->addJob(j);
-////        JobQueue::instance()->add(j);
-//    } else {
-        for(QString s: dirList) {
-            QVariantMap localConfig = config;
-            localConfig["inputDir"] = s;
-//            qDebug() << localConfig;
-//            qDebug() << config;
-
-            Job *j = new Job(jobs.size()+1);
-
-            if(!j->createJob(localConfig)) {
-                delete j;
-                return false;
-            }
-
-
-            jobs[j->jobId()] = j;
-            jobModel->addJob(j);
-            JobQueue::instance()->add(j);
+        if(!j->createJob(localConfig)) {
+            delete j;
+            return false;
         }
-//    }
+
+
+        jobs[j->jobId()] = j;
+        jobModel->addJob(j);
+        JobQueue::instance()->add(j);
+    }
+
     return true;
 }
 
@@ -149,12 +137,12 @@ void JobModel::addJob(Job* j)
     connect(j, &Job::jobUpdate, this, &JobModel::jobUpdate);
     connect(j, &Job::jobStarted, this, &JobModel::jobStarted);
     connect(j, &Job::jobEnded, this, &JobModel::jobEnded);
-//    connect(j, &Job::finished, this, &QObject::deleteLater);
+    //    connect(j, &Job::finished, this, &QObject::deleteLater);
 }
 
 void JobModel::jobUpdate(int jobId, const QString &process, const QString &state, float progress)
 {
-//    qDebug() << Q_FUNC_INFO << jobId << process << state << progress;
+    qDebug() << Q_FUNC_INFO << jobId << process << state << progress;
 
     jobs[jobId -1][1] = state;
     jobs[jobId -1][2] = process;
@@ -166,7 +154,7 @@ void JobModel::jobUpdate(int jobId, const QString &process, const QString &state
 
 void JobModel::jobStarted(int jobId)
 {
-//    jobModel->setData(jobModel->index(jobId-1, 0), QDateTime::currentDateTime().toLocalTime().toString(), JobModel::StartTime);
+    //    jobModel->setData(jobModel->index(jobId-1, 0), QDateTime::currentDateTime().toLocalTime().toString(), JobModel::StartTime);
     jobs[jobId -1][4] = QTime::currentTime().toString(Qt::ISODateWithMs);
 
     QModelIndex index = createIndex(jobs.keys().indexOf(jobId-1), 0, &jobs[jobId -1]);
@@ -179,6 +167,6 @@ void JobModel::jobEnded(int jobId)
 
     QModelIndex index = createIndex(jobs.keys().indexOf(jobId-1), 0, &jobs[jobId -1]);
     emit dataChanged(index, index, roleNames().keys().toVector());
-//    jobModel->setData(jobModel->index(jobId-1, 0), QDateTime::currentDateTime().toLocalTime().toString(), JobModel::EndTime);
+    //    jobModel->setData(jobModel->index(jobId-1, 0), QDateTime::currentDateTime().toLocalTime().toString(), JobModel::EndTime);
 }
 

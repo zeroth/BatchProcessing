@@ -1,6 +1,6 @@
 #include "JobQueue.h"
 #include <QMutexLocker>
-
+#include <QDebug>
 JobQueue *JobQueue::instance()
 {
     static JobQueue* _instance = new JobQueue();
@@ -27,6 +27,7 @@ void JobQueue::remove(int index)
 
 void JobQueue::run()
 {
+    qDebug() << Q_FUNC_INFO;
     if(jobs.isEmpty())
         return;
     while(jobs.size()){

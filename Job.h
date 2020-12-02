@@ -25,7 +25,6 @@ public:
     int jobId() const;
     bool createJob(const QVariantMap& config);
     void operator()();
-    void deskewKernel(const QString& inputPath, const QString& outputPath, float dz, float xy, double angle);
     QString inputPath() const {
         return inputDir;
     }

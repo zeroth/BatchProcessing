@@ -332,6 +332,21 @@ void BioImage::save(const QString& path)
     im.close();
 }
 
+void BioImage::save8Bit(const QString& path)
+{
+    zeroth::TiffWriter im(path.toStdString(), d->width, d->height, zeroth::SampleFormat::UINT8);
+    uint32_t pSize =  d->width * d->height;
+    uint8_t * bff = this->toUint8();
+    for(uint32_t i = 0; i < d->depth; i++) {
+        uint32_t startPoint = i* pSize;
+        uint8_t* tmp = new uint8_t[pSize];
+        memcpy(tmp, (uint8_t*)bff+startPoint, pSize);
+        im.write(tmp);
+        delete [] tmp;
+    }
+    im.close();
+}
+
 
 template<typename T>
 T *BioImage::data()

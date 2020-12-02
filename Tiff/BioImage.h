@@ -53,6 +53,7 @@ public:
     T* data();
 
     void save(const QString& path);
+    void save8Bit(const QString& path);
 
     /*uint32_t operator()(uint32_t x, uint32_t y, uint32_t z) const;
 
